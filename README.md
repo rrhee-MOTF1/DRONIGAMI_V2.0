@@ -7,3 +7,4 @@
 4. Double click on "install" to run the install batch file
 5. DRONIGAMI V2.0 should have added a new dronigami shortcut to your desktop with a gray origami crane icon. Double click to start the app
 6. The app is set to run on 127.0.0.1:8080 (localhost port 8080)
+ 
