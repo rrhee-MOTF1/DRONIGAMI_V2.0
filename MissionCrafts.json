@@ -1,0 +1,198 @@
+{
+    "1" : {
+        "title": "RECON",
+	"abbr": "RECN",
+        "crafts": {
+            "00": {
+                "name": "UNSPECIFIED UAS",
+                "shortName": "uUAS"
+            },
+            "01": {
+                "name": "DJI M30T",
+                "shortName": "D_M30T"
+            },
+            "02": {
+                "name": "DJI Mavic",
+                "shortName": "D_Mavic"
+            },
+            "03": {
+                "name": "Parrot Anafi",
+                "shortName": "P_Anafi"
+            }
+        },
+        "folders": [
+            "pictures_Raw_Data",
+            "picture_Blurred",
+            "pictures_Final"
+        ]
+    },
+    "2": {
+        "title": "PRIMARY SEARCH",
+	"abbr": "PRMY",
+        "crafts": {
+            "00": {
+                "name": "UNSPECIFIED UAS",
+                "shortName": "uUAS"
+            },
+            "01": {
+                "name": "DJI M30T",
+                "shortName": "D_M30T"
+            },
+            "02": {
+                "name": "DJI Mavic",
+                "shortName": "D_Mavic"
+            },
+            "03": {
+                "name": "Parrot Anafi",
+                "shortName": "P_Anafi"
+            },
+            "04": {
+                "name": "DJI Avata",
+                "shortName": "D_Avata"
+            }
+        },
+        "folders": [
+            "pictures_Raw_Data",
+            "videos_Raw_Data",
+            "picture_Blurred",
+            "pictures_Final"
+        ]
+    },
+    "3" : {
+        "title": "TARGETED",
+	"abbr": "TGTD",
+        "crafts": {
+            "00": {
+                "name": "UNSPECIFIED UAS",
+                "shortName": "uUAS"
+            },
+            "01": {
+                "name": "DJI M30T",
+                "shortName": "D_M30T"
+            },
+            "02": {
+                "name": "DJI Mavic",
+                "shortName": "D_Mavic"
+            },
+            "03": {
+                "name": "Parrot Anafi",
+                "shortName": "P_Anafi"
+            },
+            "04": {
+                "name": "DJI Avata",
+                "shortName": "D_Avata"
+            }
+        },
+        "folders": [
+            "pictures_Raw_Data",
+            "videos_Raw_Data",
+            "picture_Blurred",
+            "pictures_Final"
+        ]
+    },
+    "4" : {
+        "title": "MAPPING",
+	"abbr": "MPNG",
+        "crafts": {
+            "00": {
+                "name": "UNSPECIFIED UAS",
+                "shortName": "uUAS",
+		"processingFlag": "Y"
+            },
+            "01": {
+                "name": "DJI M30T",
+                "shortName": "D_M30T",
+		"processingFlag": "N"
+            },
+            "02": {
+                "name": "DJI Mavic",
+                "shortName": "D_Mavic",
+		"processingFlag": "N"
+            },
+            "03": {
+                "name": "Parrot Anafi",
+                "shortName": "P_Anafi",
+		"processingFlag": "N"
+            },
+            "04": {
+                "name": "Wingtra",
+                "shortName": "Wingtra",
+                "processingFlag": "Y"
+            },
+            "05": {
+                "name": "Ebee",
+                "shortName": "Ebee",
+                "processingFlag": "Y"
+            }
+        },
+        "folders": [
+            "pictures_Raw_Data",
+            "pictures_Geotagged",
+            "geotiff"
+        ]
+    },
+    "5" : {
+        "title": "TECH SEARCH",
+	"abbr": "TCNL",
+        "crafts": {
+            "00": {
+                "name": "UNSPECIFIED UAS",
+                "shortName": "uUAS"
+            },
+            "01": {
+                "name": "DJI M30T",
+                "shortName": "D_M30T"
+            },
+            "02": {
+                "name": "DJI Mavic",
+                "shortName": "D_Mavic"
+            },
+            "03": {
+                "name": "Parrot Anafi",
+                "shortName": "P_Anafi"
+            },
+            "04": {
+                "name": "DJI Avata",
+                "shortName": "D_Avata"
+            }
+        },
+        "folders": [
+            "pictures_Raw_Data",
+            "videos_Raw_Data",
+            "picture_Blurred",
+            "pictures_Final"
+        ]
+    },
+    "6" : {
+        "title": "LIVEFEED",
+	"abbr": "LVFD",
+        "crafts": {
+            "00": {
+                "name": "UNSPECIFIED UAS",
+                "shortName": "uUAS"
+            },
+            "01": {
+                "name": "DJI M30T",
+                "shortName": "D_M30T"
+            },
+            "02": {
+                "name": "DJI Mavic",
+                "shortName": "D_Mavic"
+            },
+            "03": {
+                "name": "Parrot Anafi",
+                "shortName": "P_Anafi"
+            },
+            "04": {
+                "name": "DJI Avata",
+                "shortName": "D_Avata"
+            }
+        },
+        "folders": [
+            "pictures_Raw_Data",
+            "videos_Raw_Data",
+            "picture_Blurred",
+            "pictures_Final"
+        ]
+    }
+}

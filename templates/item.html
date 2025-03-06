@@ -1,0 +1,238 @@
+<html>
+    <head>
+        <title>DSAR Dronigami V2</title>
+        <link href="{{ url_for('static', path='/styles.css')}}" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    </head>
+    <body>
+        <div class="app-header" id="pageTopFrame">
+            <h1>Dronigami V2</h1>
+            <h3>&#9754 It Folds! &#9755</h3>
+        </div>
+        <div style="display: flex;flex-direction: row">
+            <div class="app-body">
+                <p>{{ message }}</p>
+                <div class="div-spacer-vertical"></div>
+                <div class="div-display-horizontal" id="buttonDiv">
+                    <button class="app-button" id="createFolderButton" value="{{ craftType }}">Create Folder: Flight #{{ initialFlight }}<br><br>{{ missionType }} - {{ craftType }}</button>
+                    <div class="line-vertical"></div>
+                </div>
+                <div class="div-spacer-vertical"></div>
+                <div class="div-display-horizontal" id="internetConnectionHeader"> 
+                    <span class="material-symbols-outlined" id="conStatusIndicator" style="text-align:center;font-size:48px;">wifi_off</span>
+                    <div class="div-spacer-horizontal-medium"></div>
+                    <h3 id="conStatusText" style="font-size:36px">No connection detected</h3>
+                </div>
+                <div class="div-spacer-vertical"></div>
+                <div class="div-weather-frame" id="weatherReportFrame">
+                    <div>
+                        <h2 style="text-align:center">METAR</h2>  
+                        <div class="div-spacer-vertical"></div>  
+                        <h4 id="metarWeatherData" style="text-align:center;width:30vw">Error<br>METAR unavailable</h4>
+                    </div>
+                    <div class="div-spacer-horizontal-small"></div>
+                    <div class="line-vertical"></div>
+                    <div class="div-spacer-horizontal-small"></div>
+                    <div>
+                        <h2 style="text-align:center">TAF</h2>
+                        <div class="div-spacer-vertical"></div>
+                        <h4 id="tafWeatherData" style="text-align:center">TAF unavailable</h4>
+                    </div>
+                </div>
+                <div class="div-spacer-vertical"></div>
+                <div>
+                    <button id="openSurveyButton" class="app-button" style="font-size:22px;height:10vh;width:25vw;">Open Safety Checklist</button>
+                </div>
+                <div class="div-spacer-vertical"></div>
+                DELETE<iframe src="http://192.168.30.103/skyaware/" title="flight aware map" id="flightAwareFrame" class="app-iframe-guide"></iframe>
+                <div class="div-spacer-vertical"></div>
+            </div>
+            <div class="app-sidebar">
+                <button class="material-symbols-outlined" style="font-size:48px;background-color:#7293e7;border:0px;padding-bottom:50px" id="pageTopButton">folder_copy</button>
+                <button class="material-symbols-outlined" style="font-size:48px;background-color:#7293e7;border:0px;padding-bottom:50px" id="weatherReportButton">partly_cloudy_day</button>
+                <button class="material-symbols-outlined" style="font-size:48px;background-color:#7293e7;border:0px;padding-bottom:50px" id="flightAwareButton">flight</button>
+            </div>
+        </div>
+        <div id="checklistPopupBlur" class="div-popup-window-blur"></div>
+        <div id="checklistPopup" class="div-popup-window">
+            <div style="width:100%;height:100%">
+                <button id="closePopup" style="position:fixed;top:2%;right:2%;font-size:24px;border:0px;background-color:#ffffff;">X</button>
+                <iframe src="http://www.something.com" title="Safety Checklist" id="surveyChecklistFrame" style="width:100%;height:100%;overflow:auto;border:0px;"></iframe>
+            </div>
+        </div>
+        <script src="{{ url_for('static', path='weather.js') }}"></script>
+        <script>
+            let connectionStatus = "offline"
+            
+            function testConnection() {
+                connectionStatus = window.navigator.onLine ? "online" : "offline"
+                let conStatusIndicator = document.getElementById("conStatusIndicator")
+                if (connectionStatus == "online") {
+                    conStatusIndicator.innerHTML = '<span class="material-symbols-outlined" id="conStatusIndicator" style="text-align:center;font-size:48px;">wifi</span>'
+                    conStatusText.innerHTML = '<h3 id="conStatusText" style="font-size:36px">Network connection succesful</h3>'
+                } else {
+                    conStatusIndicator.innerHTML = '<span class="material-symbols-outlined" id="conStatusIndicator" style="text-align:center;font-size:48px;">wifi_off</span>'
+                    conStatusText.innerHTML = '<h3 id="conStatusText" style="font-size:36px">No connection detected</h3>'
+                }
+            }
+            const onlineIndicator = document.getElementById('onlineStatus')
+            testConnection();
+            
+            let globalNextFlight = {{ initialFlight }}
+
+            const button = document.getElementById("createFolderButton")
+            button.addEventListener('click', function() {
+                let missionDirectoryPath = '{{ missionDirectoryPath | tojson }}'
+                let folderCode = '{{ folderCode }}'
+                let craftTypeShort = '{{ craftTypeShort }}'
+                fetch('/newFlight', {
+                    method: 'POST',
+                    headers: {
+                        'Content-type':'application/json'
+                    },
+                    body: JSON.stringify({
+                        'missionDirectoryPath':missionDirectoryPath,
+                        'folderCode':folderCode,
+                        'craftTypeShort': craftTypeShort
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    globalNextFlight = data.nextFlight
+                    updateButtonText();
+                })
+            })
+
+            const buttonDiv = document.getElementById("buttonDiv")
+            let craftDict = JSON.parse('{{ craftPassDict | tojson }}')
+            let craftArray = Object.keys(craftDict);
+            function addButton() {
+                const filterValue = '{{ craftType }}'
+                craftArray = craftArray.filter(item => item != filterValue);
+                for (var craft of craftArray) {
+                    let craftName = craftDict[craft][1]
+                    let folderCodeValue = craftDict[craft][0]
+                    let craftTypeShort = craftDict[craft][2]
+                    let button = document.createElement ("button");
+                    button.innerHTML = 'Create Folder: Flight #{{ initialFlight }}<br><br>{{ missionType }} - ' + craftName;
+                    button.classList.add("app-button");
+                    button.value = craftName;
+                    button.addEventListener('click', function() {
+                        let missionDirectoryPath = '{{ missionDirectoryPath | tojson }}'
+                        let folderCode = folderCodeValue;
+                        fetch('/newFlight', {
+                            method: 'POST',
+                            headers: {
+                                'Content-type':'application/json'
+                            },
+                            body: JSON.stringify({
+                                'missionDirectoryPath':missionDirectoryPath,
+                                'folderCode':folderCode,
+                                'craftTypeShort': craftTypeShort
+                           })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            globalNextFlight = data.nextFlight
+                            updateButtonText();
+                        })
+                    })
+                    buttonDiv.append(button)
+                }}
+
+                function updateButtonText() {
+                    const buttons = document.querySelectorAll('.app-button');
+                    buttons.forEach(button => {
+                        button.innerHTML = 'Create Folder: Flight #' + globalNextFlight + '<br><br>{{ missionType }} - ' + button.value;
+                    })
+                }
+                addButton()
+
+            const checklistButton = document.getElementById("openSurveyButton")
+            const checklistPopup = document.getElementById("checklistPopup")
+            const checklistPopupBlur = document.getElementById("checklistPopupBlur")
+            checklistButton.addEventListener("click", function() {
+                checklistPopup.classList.add("show");
+                checklistPopupBlur.classList.add("show");
+                setChecklist();
+            })
+            const closeChecklistButton = document.getElementById("closePopup")
+            closeChecklistButton.addEventListener("click", function() {
+                checklistPopup.classList.remove("show");
+                checklistPopupBlur.classList.remove("show");
+            })
+
+            const clickFlightAware = document.getElementById('flightAwareButton')
+            const anchorFlightAware = document.getElementById('flightAwareFrame')
+            clickFlightAware.addEventListener('click', function() {
+                anchorFlightAware.scrollIntoView({ behavior: 'smooth' });
+            });
+            const clickPageTop = document.getElementById('pageTopButton')
+            const anchorPageTop = document.getElementById('pageTopFrame')
+            clickPageTop.addEventListener('click', function() {
+                anchorPageTop.scrollIntoView({ behavior: 'smooth' });
+            });
+            const clickWeatherReport = document.getElementById('weatherReportButton')
+            const anchorWeatherReport = document.getElementById('weatherReportFrame')
+            clickWeatherReport.addEventListener('click', function() {
+                anchorWeatherReport.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            function setChecklist() {
+                const survey123Url = document.getElementById("surveyChecklistFrame")
+                if (connectionStatus == 'online') {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(function(position) {
+                            let Lat = position.coords.latitude;
+                            let Long = position.coords.longitude;
+                            survey123Url.src = "https://survey123.arcgis.com/share/8cd9d145d98348efbd312234debb2e37" + "?field:LAT_=" + Lat + "&field:LON_=" + Long + "&field:mis_type={{ missionType }}&field:mis_int={{ missionGlobalId }}&hide=navbar,header,footer,theme,leaveDialog,field=mis_type"
+                        });
+                    }                      
+                }
+            }
+
+            let locationFetched = false;
+
+            function getLocation() {
+                if (locationFetched) return;
+                locationFetched = true;
+
+                const metarTextBlock = document.getElementById("metarWeatherData")
+                const tafTextBlock = document.getElementById("tafWeatherData")
+                const survey123Url = document.getElementById("surveyChecklistFrame")                
+                if (connectionStatus == 'online') {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(function(position) {
+                            let Lat = position.coords.latitude;
+                            let Long = position.coords.longitude;
+                            updateMetar(Lat, Long);
+                            survey123Url.src = survey123Url.src + "?field:LAT_=" + Lat + "&field:LON_=" + "&field:mis_type={{ missionType }}&field:mis_int={{ missionGlobalId }}&hide=navbar,header,footer,theme,leaveDialog,field:mis_type"
+                        });
+                    } else {
+                        metarTextBlock.innerHTML = "No location provided<br>METAR unavailable"
+                        tafTextBlock.innerHTML = "TAF unavailaable"
+                    }
+                } else {
+                    metarTextBlock.innerHTML = "No network connection<br>METAR unavailable"
+                    tafTextBlock.innerHTML = "TAF unavailable"
+                }
+            }
+            
+            window.onload = function() {
+                if (!locationFetched) {
+                    getLocation();
+                    console.log("Weather Updated")
+                }
+            }
+
+            function updateMetar(Lat, Long) {
+                const metarTextBlock = document.getElementById("metarWeatherData")
+                const tafTextBlock = document.getElementById("tafWeatherData")
+                let metarText = getWeather(Lat, Long)
+                metarTextBlock.innerHTML = metarText
+                let tafText = getTAF(Lat, Long)
+                tafTextBlock.innerHTML = tafText
+            }
+        </script>
+    </body>
+</html>
