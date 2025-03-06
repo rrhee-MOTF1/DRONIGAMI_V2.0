@@ -44,8 +44,10 @@
                     <button id="openSurveyButton" class="app-button" style="font-size:22px;height:10vh;width:25vw;">Open Safety Checklist</button>
                 </div>
                 <div class="div-spacer-vertical"></div>
-                DELETE<iframe src="http://192.168.30.103/skyaware/" title="flight aware map" id="flightAwareFrame" class="app-iframe-guide"></iframe>
-                <div class="div-spacer-vertical"></div>
+                <div class="div-display-horizontal">
+                    <a href="www.something.com" id="flightRadarLink" style="font-size:28px;text-align:center">Open Flight Radar (ADS-B) Map</a>
+                </div>
+                    <div class="div-spacer-vertical"></div>
             </div>
             <div class="app-sidebar">
                 <button class="material-symbols-outlined" style="font-size:48px;background-color:#7293e7;border:0px;padding-bottom:50px" id="pageTopButton">folder_copy</button>
@@ -185,7 +187,7 @@
                         navigator.geolocation.getCurrentPosition(function(position) {
                             let Lat = position.coords.latitude;
                             let Long = position.coords.longitude;
-                            survey123Url.src = "https://survey123.arcgis.com/share/8cd9d145d98348efbd312234debb2e37" + "?field:LAT_=" + Lat + "&field:LON_=" + Long + "&field:mis_type={{ missionType }}&field:mis_int={{ missionGlobalId }}&hide=navbar,header,footer,theme,leaveDialog,field=mis_type"
+                            survey123Url.src = "https://survey123.arcgis.com/share/8cd9d145d98348efbd312234debb2e37" + "?field:LAT_=" + Lat + "&field:LON_=" + Long + "&field:mis_type={{ missionType }}&field:mis_int={{ missionGlobalId }}&hide=navbar,header,footer,theme,leaveDialog,field:mis_type"
                         });
                     }                      
                 }
@@ -199,14 +201,16 @@
 
                 const metarTextBlock = document.getElementById("metarWeatherData")
                 const tafTextBlock = document.getElementById("tafWeatherData")
-                const survey123Url = document.getElementById("surveyChecklistFrame")                
+                const flightRadarUrl = document.getElementById("flightRadarLink")             
                 if (connectionStatus == 'online') {
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(function(position) {
                             let Lat = position.coords.latitude;
                             let Long = position.coords.longitude;
+                            flightRadarUrl.href = "https://www.flightradar24.com/"+Lat.toFixed(2)+","+Long.toFixed(2)+"/12"
+                            console.log(flightRadarUrl.href)
                             updateMetar(Lat, Long);
-                            survey123Url.src = survey123Url.src + "?field:LAT_=" + Lat + "&field:LON_=" + "&field:mis_type={{ missionType }}&field:mis_int={{ missionGlobalId }}&hide=navbar,header,footer,theme,leaveDialog,field:mis_type"
+
                         });
                     } else {
                         metarTextBlock.innerHTML = "No location provided<br>METAR unavailable"
